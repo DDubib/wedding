@@ -37,35 +37,53 @@
      ═══════════════════════════════════════════ */
 
   function loadImagesFromFolder(folder, maxAttempts = 50) {
-    return new Promise(resolve => {
-        const images = [];
-        let current = 1;
-        let consecutiveFails = 0;
+  return new Promise(resolve => {
+    const images = [];
+    let current = 1;
+    let consecutiveFails = 0;
 
-        function tryNext() {
-            if (current > maxAttempts || consecutiveFails >= 3) {
-                resolve(images);
-                return;
-            }
-            const img = new Image();
-            const path = `images/${folder}/${current}.jpg`;
-            img.onload = function() {
-                images.push(path);
-                consecutiveFails = 0;
-                current++;
-                tryNext();
-            };
-            img.onerror = function() {
-                consecutiveFails++;
-                current++;
-                tryNext();
-            };
-            img.src = path;
+    const extensions = ['jpg', 'JPG', 'png', 'PNG', 'webp', 'WEBP'];
+
+    function tryNext() {
+      if (current > maxAttempts || consecutiveFails >= 3) {
+        resolve(images);
+        return;
+      }
+
+      let extIndex = 0;
+      const img = new Image();
+
+      function tryExtension() {
+        if (extIndex >= extensions.length) {
+          // 모든 확장자 실패 → 다음 이미지로
+          consecutiveFails++;
+          current++;
+          tryNext();
+          return;
         }
 
+        const path = `images/${folder}/${current}.${extensions[extIndex]}`;
+        img.src = path;
+      }
+
+      img.onload = function () {
+        images.push(img.src); // 성공한 실제 경로 저장
+        consecutiveFails = 0;
+        current++;
         tryNext();
-    });
-  }
+      };
+
+      img.onerror = function () {
+        extIndex++;
+        tryExtension(); // 다음 확장자 시도
+      };
+
+      tryExtension(); // 첫 시도 시작
+    }
+
+    tryNext();
+  });
+}
 
   /* ═══════════════════════════════════════════
      Toast
