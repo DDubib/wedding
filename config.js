@@ -71,8 +71,8 @@ const CONFIG = {
     ],
     bride: [
       { role: "신부", name: "박정원", bank: "카카오뱅크", number: "3333-05-0284050" },
-      { role: "아버지", name: "박무진", bank: "기업은행", number: "000-000-000000" },
-      { role: "어머니", name: "권미령", bank: "농협은행", number: "000-000-000000" }
+      { role: "아버지", name: "박무진", bank: "국민은행", number: "776-21-0222-865" },
+      { role: "어머니", name: "권미령", bank: "국민은행", number: "08790104284503" }
     ]
   },
 
